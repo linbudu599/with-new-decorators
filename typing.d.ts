@@ -1,3 +1,26 @@
+declare type DecoratorKind =
+  | "class"
+  | "method"
+  | "property"
+  | "setter"
+  | "getter"
+  | "accessor";
+
+declare type Decorator = <Accessor, Input, Output>(
+  value: Input,
+  context: {
+    kind: DecoratorKind;
+    name: string | symbol;
+    access: {
+      get?(): Accessor;
+      set?(value: Accessor): void;
+    };
+    private?: boolean;
+    static?: boolean;
+    addInitializer?(initializer: () => void): void;
+  }
+) => Output | void;
+
 declare type ClassMethodDecoratorNew = (
   value: Function,
   context: {

@@ -1,4 +1,5 @@
 /// <reference path="../../typing.d.ts" />
+/** @type {Decorator} */
 function logged(value, { kind, name }) {
   if (kind === "method") {
     return function (...args) {
