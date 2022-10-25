@@ -1,0 +1,36 @@
+{
+  "name": "new-decorators-with-babel",
+  "version": "1.0.0",
+  "private": true,
+  "devDependencies": {
+    "@babel/cli": "^7.19.3",
+    "@babel/core": "^7.19.6",
+    "@babel/node": "^7.19.1",
+    "@babel/plugin-proposal-decorators": "^7.19.6",
+    "@babel/preset-env": "^7.19.4",
+    "nodemon": "^2.0.20"
+  },
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "**/test/**",
+      "**/docs/**",
+      "node_modules"
+    ],
+    "verbose": true,
+    "restartable": "rs",
+    "execMap": {
+      "js": "babel-node"
+    },
+    "delay": 500,
+    "watch": [
+      "*.js"
+    ],
+    "env": {
+      "NODE_ENV": "development"
+    },
+    "ext": "js,json"
+  }
+}
