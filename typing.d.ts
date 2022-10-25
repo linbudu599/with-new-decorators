@@ -12,12 +12,12 @@ declare type Decorator = <Accessor, Input, Output>(
     kind: DecoratorKind;
     name: string | symbol;
     access: {
-      get?(): Accessor;
-      set?(value: Accessor): void;
+      get: () => Accessor;
+      set?: (value: Accessor) => void;
     };
     private?: boolean;
     static?: boolean;
-    addInitializer?(initializer: () => void): void;
+    addInitializer?: (initializer: () => void) => void;
   }
 ) => Output | void;
 
@@ -26,10 +26,10 @@ declare type ClassMethodDecoratorNew = (
   context: {
     kind: "method";
     name: string | symbol;
-    access: { get(): unknown };
+    access: { get: () => unknown };
     static: boolean;
     private: boolean;
-    addInitializer(initializer: () => void): void;
+    addInitializer: (initializer: () => void) => void;
   }
 ) => Function | void;
 
@@ -38,10 +38,10 @@ declare type ClassGetterDecorator = (
   context: {
     kind: "getter";
     name: string | symbol;
-    access: { get(): unknown };
+    access: { get: () => unknown };
     static: boolean;
     private: boolean;
-    addInitializer(initializer: () => void): void;
+    addInitializer: (initializer: () => void) => void;
   }
 ) => Function | void;
 
@@ -50,10 +50,10 @@ declare type ClassSetterDecorator = (
   context: {
     kind: "setter";
     name: string | symbol;
-    access: { set(value: unknown): void };
+    access: { set: (value: unknown) => void };
     static: boolean;
     private: boolean;
-    addInitializer(initializer: () => void): void;
+    addInitializer: (initializer: () => void) => void;
   }
 ) => Function | void;
 
@@ -62,7 +62,7 @@ declare type ClassFieldDecorator = (
   context: {
     kind: "field";
     name: string | symbol;
-    access: { get(): unknown; set(value: unknown): void };
+    access: { get: () => unknown; set: (value: unknown) => void };
     static: boolean;
     private: boolean;
   }
@@ -73,22 +73,22 @@ declare type ClassDecoratorNew = (
   context: {
     kind: "class";
     name: string | undefined;
-    addInitializer(initializer: () => void): void;
+    addInitializer: (initializer: () => void) => void;
   }
 ) => Function | void;
 
 declare type ClassAutoAccessorDecorator = (
   value: {
     get: () => unknown;
-    set(value: unknown): void;
+    set: (value: unknown) => void;
   },
   context: {
     kind: "accessor";
     name: string | symbol;
-    access: { get(): unknown; set(value: unknown): void };
+    access: { get: () => unknown; set: (value: unknown) => void };
     static: boolean;
     private: boolean;
-    addInitializer(initializer: () => void): void;
+    addInitializer: (initializer: () => void) => void;
   }
 ) => {
   get?: () => unknown;
