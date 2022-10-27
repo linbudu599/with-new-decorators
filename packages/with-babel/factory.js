@@ -14,7 +14,7 @@ function factory(self, context) {
         const res = self.call(this, ...args);
         return res;
       };
-    case "property":
+    case "field":
       console.log("Prop Decorator Produced");
       return function (...args) {};
     case "getter":
@@ -25,7 +25,11 @@ function factory(self, context) {
       return function (...args) {};
     case "accessor":
       console.log("Accessor Decorator Produced");
-      return function (...args) {};
+      // accessor decorators must return an object with get, set, or init properties or void 0
+      return {
+        get: function (...args) {},
+        set: function (...args) {},
+      };
     default:
       break;
   }
@@ -44,4 +48,7 @@ class C {
 
   @factory
   set prop(value) {}
+
+  @factory
+  accessor _prop = false;
 }

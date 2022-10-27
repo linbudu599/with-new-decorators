@@ -1,7 +1,7 @@
 declare type DecoratorKind =
   | "class"
   | "method"
-  | "property"
+  | "field"
   | "setter"
   | "getter"
   | "accessor";
@@ -11,12 +11,14 @@ declare type Decorator = <Accessor, Input, Output>(
   context: {
     kind: DecoratorKind;
     name: string | symbol;
+    // 获取实例上元素的最终值，而不是传递给装饰器的当前值
     access: {
       get: () => Accessor;
       set?: (value: Accessor) => void;
     };
     private?: boolean;
     static?: boolean;
+    // 允许用户添加额外的初始化逻辑。这适用于所有按类操作的装饰器
     addInitializer?: (initializer: () => void) => void;
   }
 ) => Output | void;

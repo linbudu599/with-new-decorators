@@ -8,6 +8,7 @@
     "@babel/node": "^7.19.1",
     "@babel/plugin-proposal-decorators": "^7.19.6",
     "@babel/preset-env": "^7.19.4",
+    "@types/node": "^18.11.7",
     "nodemon": "^2.0.20"
   },
   "scripts": {
