@@ -14,8 +14,21 @@ function CollectDecoratedMethod(self, { kind, name, addInitializer }) {
   });
 }
 
+class Collector {
+  static #collections = new Set();
+
+  /** @type {Decorator} */
+  static Collect(self, { kind, name, addInitializer }) {
+    kind === "class" &&
+      addInitializer(function () {
+        Collector.#collections.add(name);
+      });
+  }
+}
+
 class Foo {
   @CollectDecoratedMethod
+  @Collector.Collect
   findMany() {}
 
   @CollectDecoratedMethod
