@@ -1,4 +1,5 @@
 /// <reference path="../../../typing.d.ts" />
+import assert from "assert";
 import { setTimeout } from "timers/promises";
 
 /** @type {Decorator} */
