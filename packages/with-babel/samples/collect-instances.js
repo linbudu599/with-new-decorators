@@ -1,7 +1,6 @@
 /// <reference path="../../../typing.d.ts" />
 import assert from "assert";
 
-/** @type {Decorator} */
 class InstanceCollector {
   static instances = new Set();
 
