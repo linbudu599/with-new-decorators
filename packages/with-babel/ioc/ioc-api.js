@@ -31,14 +31,6 @@ class RouterCollector {
     return RouterCollector.RouteDecoratorFactory(RequestType.Get)(path);
   }
 
-  // 将 path 对应的请求信息绑定到此属性上
-  /** @type {(path: string) => ClassFieldDecorator} */
-  static Req(path) {
-    return (self, { name }) => {
-      return (initValue) => "xxx";
-    };
-  }
-
   /** @type {(path: string) => ClassMethodDecoratorNew} */
   static Post(path) {
     return RouterCollector.RouteDecoratorFactory(RequestType.Post)(path);
@@ -80,7 +72,7 @@ class RouterCollector {
   }
 }
 
-const { Get, Post, Controller, Req } = RouterCollector;
+const { Get, Post, Controller } = RouterCollector;
 
 class ServerUtils {
   /** @type {(req: http.IncomingMessage) => Promise<unknown>} */
@@ -103,9 +95,7 @@ class ServerUtils {
 
 @Controller("/user")
 class UserController {
-  @Req("/query")
-  queryUserBody;
-
+  /** @type {(req: http.IncomingMessage, res: http.ServerResponse) => Promise<unknown>} */
   @Get("/query")
   // As parameter decorator is not supported in current proposal,
   // we inject request body by default

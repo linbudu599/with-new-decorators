@@ -111,21 +111,48 @@ class RouterCollector {
 
 const { Get, Post, Controller } = RouterCollector;
 
+class ServerUtils {
+  /** @type {(req: http.IncomingMessage) => Promise<unknown>} */
+  static async parsePost(req) {
+    return new Promise((resolve, reject) => {
+      const data = [];
+      req.on("data", (chunk) => {
+        data.push(chunk);
+      });
+
+      req.on("end", () => {
+        resolve(JSON.parse(Buffer.concat(data).toString()));
+      });
+      req.on("error", (error) => {
+        reject(error);
+      });
+    });
+  }
+}
+
 @Controller("/user")
 class UserController {
+  /** @type {(req: http.IncomingMessage, res: http.ServerResponse) => Promise<unknown>} */
   @Get("/query")
-  async queryUser() {
+  // As parameter decorator is not supported in current proposal,
+  // we inject request body by default
+  async queryUser(req, res) {
     return {
-      name: "Linbudu",
-      age: 18,
+      success: true,
+      data: {
+        name: "Linbudu",
+        age: 18,
+      },
     };
   }
 
+  /** @type {(req: http.IncomingMessage, res: http.ServerResponse) => Promise<unknown>} */
   @Post("/create")
-  async createUser() {
+  async createUser(req, res) {
+    const body = await ServerUtils.parsePost(req);
     return {
-      name: "CreatedUserLinbudu",
-      age: 180,
+      success: true,
+      data: body,
     };
   }
 }
@@ -141,7 +168,7 @@ http
         req.method === info.requestMethod.toLocaleUpperCase()
       ) {
         currentRequestHandled = true;
-        info.requestHandle().then((result) => {
+        info.requestHandle(req, res).then((result) => {
           res.writeHead(200, { "Content-Type": "application/json" });
           res.end(JSON.stringify(result));
         });
@@ -181,28 +208,38 @@ http
       )
       .end();
 
-    http
-      .request(
-        {
-          hostname: "localhost",
-          port: 3000,
-          path: "/user/create",
-          method: "POST",
+    const postReq = http.request(
+      {
+        hostname: "localhost",
+        port: 3000,
+        path: "/user/create",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        (res) => {
-          const chunks = [];
-          res.on("data", (chunk) => {
-            chunks.push(chunk);
-          });
-          res.on("end", () => {
-            console.log(
-              "post /user/query response: ",
-              Buffer.concat(chunks).toString()
-            );
-          });
-        }
-      )
-      .end();
+      },
+      (res) => {
+        const chunks = [];
+        res.on("data", (chunk) => {
+          chunks.push(chunk);
+        });
+        res.on("end", () => {
+          console.log(
+            "POST /user/query response: ",
+            Buffer.concat(chunks).toString()
+          );
+        });
+      }
+    );
+
+    postReq.write(
+      JSON.stringify({
+        name: "Harold",
+        age: 18,
+      })
+    );
+
+    postReq.end();
   });
 ```
 
