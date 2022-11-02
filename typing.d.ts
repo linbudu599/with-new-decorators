@@ -6,6 +6,8 @@ declare type DecoratorKind =
   | "getter"
   | "accessor";
 
+declare type DecoratorFactory = (...args: unknown[]) => Decorator;
+
 declare type Decorator = <Accessor, Input, Output>(
   value: Input,
   context: {
