@@ -85,7 +85,12 @@ class UserController {
   }
 
   @Post("/create")
-  async createUser() {}
+  async createUser() {
+    return {
+      name: "CreatedUserLinbudu",
+      age: 180,
+    };
+  }
 }
 
 const controllerHandleInfo = RouterCollector.collect(new UserController());
@@ -98,10 +103,10 @@ http
         req.url === info.requestPath &&
         req.method === info.requestMethod.toLocaleUpperCase()
       ) {
+        currentRequestHandled = true;
         info.requestHandle().then((result) => {
           res.writeHead(200, { "Content-Type": "application/json" });
           res.end(JSON.stringify(result));
-          currentRequestHandled = true;
         });
       }
     }
@@ -115,5 +120,50 @@ http
   .on("listening", () => {
     console.log("✨✨✨ Server ready at http://localhost:3000 \n");
     console.log("GET /user/query at http://localhost:3000/user/query");
-    console.log("POST /user/create at http://localhost:3000/user/create");
+    console.log("POST /user/create at http://localhost:3000/user/create \n");
+
+    http
+      .request(
+        {
+          hostname: "localhost",
+          port: 3000,
+          path: "/user/query",
+        },
+        (res) => {
+          const chunks = [];
+          res.on("data", (chunk) => {
+            chunks.push(chunk);
+          });
+          res.on("end", () => {
+            console.log(
+              "GET /user/query response: ",
+              Buffer.concat(chunks).toString()
+            );
+          });
+        }
+      )
+      .end();
+
+    http
+      .request(
+        {
+          hostname: "localhost",
+          port: 3000,
+          path: "/user/create",
+          method: "POST",
+        },
+        (res) => {
+          const chunks = [];
+          res.on("data", (chunk) => {
+            chunks.push(chunk);
+          });
+          res.on("end", () => {
+            console.log(
+              "post /user/query response: ",
+              Buffer.concat(chunks).toString()
+            );
+          });
+        }
+      )
+      .end();
   });
