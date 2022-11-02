@@ -4,6 +4,7 @@
     [
       "@babel/plugin-proposal-decorators",
       {
+        // specify version to use latest impl
         "version": "2022-03"
       }
     ]

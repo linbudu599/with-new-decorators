@@ -4,5 +4,5 @@
     "checkJs": false,
     "types": ["node"]
   },
-  "include": ["*.js"]
+  "include": ["*.js", "ioc/ioc-api.js", "ioc/ioc-usage.js"]
 }
