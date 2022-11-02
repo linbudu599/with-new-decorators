@@ -10,6 +10,7 @@ importers:
       '@babel/plugin-proposal-decorators': ^7.19.6
       '@babel/preset-env': ^7.19.4
       '@types/node': ^18.11.7
+      lodash: ^4.17.21
       nodemon: ^2.0.20
     devDependencies:
       '@babel/cli': 7.19.3_@babel+core@7.19.6
@@ -18,7 +19,11 @@ importers:
       '@babel/plugin-proposal-decorators': 7.19.6_@babel+core@7.19.6
       '@babel/preset-env': 7.19.4_@babel+core@7.19.6
       '@types/node': 18.11.7
+      lodash: 4.17.21
       nodemon: 2.0.20
+
+  packages/with-typescript:
+    specifiers: {}
 
 packages:
 
@@ -1887,6 +1892,10 @@ packages:
 
   /lodash.debounce/4.0.8:
     resolution: {integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==}
+    dev: true
+
+  /lodash/4.17.21:
+    resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
     dev: true
 
   /make-dir/2.1.0:
