@@ -1,5 +1,31 @@
 {
   "name": "new-decorators-with-typescript",
   "version": "1.0.0",
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "@types/node": "^18.11.7",
+    "lodash": "^4.17.21",
+    "nodemon": "^2.0.20",
+    "typescript": "https://typescript.visualstudio.com/cf7ac146-d525-443c-b23c-0d58337efebc/_apis/build/builds/137418/artifacts?artifactName=tgz&fileId=AB77B9F7C08B0A35E9947DAD772F3CFFC61A6E13DD551F32AB732DDCDD7DF4F102&fileName=/typescript-5.0.0-insiders.20221101.tgz"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "**/test/**",
+      "**/docs/**",
+      "node_modules"
+    ],
+    "verbose": true,
+    "restartable": "rs",
+    "execMap": {
+      "ts": "esno"
+    },
+    "delay": 500,
+    "watch": [
+      "*.ts"
+    ],
+    "env": {
+      "NODE_ENV": "development"
+    },
+    "ext": "ts,json"
+  }
 }
