@@ -8,6 +8,10 @@
     "nodemon": "^2.0.20",
     "typescript": "https://typescript.visualstudio.com/cf7ac146-d525-443c-b23c-0d58337efebc/_apis/build/builds/137418/artifacts?artifactName=tgz&fileId=AB77B9F7C08B0A35E9947DAD772F3CFFC61A6E13DD551F32AB732DDCDD7DF4F102&fileName=/typescript-5.0.0-insiders.20221101.tgz"
   },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc && node dist/index.js"
+  },
   "nodemonConfig": {
     "ignore": [
       "**/test/**",
@@ -16,9 +20,7 @@
     ],
     "verbose": true,
     "restartable": "rs",
-    "execMap": {
-      "ts": "esno"
-    },
+    "exec": "tsc && node dist/index.js",
     "delay": 500,
     "watch": [
       "*.ts"
