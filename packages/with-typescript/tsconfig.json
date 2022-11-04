@@ -17,6 +17,7 @@
     "rootDir": ".",
     "paths": {
       "core": ["./ioc/Impls/Core"],
+      "container": ["./ioc/Impls/Container"],
       "decorators": ["./ioc/Impls/Decorators"],
       "server-utils": ["./ioc/Impls/Utils"],
       "create-server": ["./ioc/Impls/CreateServer"]

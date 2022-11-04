@@ -16,9 +16,9 @@ const PathMap = Map<FuncStruct, string>;
 const ControllerMap = Map<ClassStruct, string>;
 
 export class RouterCollector {
-  static controllerMap = new ControllerMap();
-  static methodMap = new MethodMap();
-  static pathMap = new PathMap();
+  private static controllerMap = new ControllerMap();
+  private static methodMap = new MethodMap();
+  private static pathMap = new PathMap();
 
   static RouteDecoratorFactory(
     method: RequestType
