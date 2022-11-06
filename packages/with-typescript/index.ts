@@ -8,5 +8,6 @@ function ClassDeco(): ClassDecoratorFunction {
     });
   };
 }
+
 @ClassDeco()
 class Foo {}
