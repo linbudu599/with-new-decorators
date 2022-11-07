@@ -1,7 +1,9 @@
 import assert from "assert";
-import { Provide, Inject } from "decorators";
+import { Provide, Inject, Scope } from "decorators";
+import { ScopeEnum } from "server-utils";
 
 @Provide()
+@Scope(ScopeEnum.Singleton)
 class FSService {
   write(path: string, content: any) {
     console.log("---FSService:WriteLogFile---", path, content, "\n");

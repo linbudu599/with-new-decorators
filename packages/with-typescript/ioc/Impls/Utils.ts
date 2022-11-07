@@ -17,3 +17,8 @@ export class ServerUtils {
     });
   }
 }
+
+export enum ScopeEnum {
+  Fresh = "Fresh",
+  Singleton = "Singleton",
+}

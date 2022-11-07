@@ -1,13 +1,25 @@
+import { ScopeEnum } from "server-utils";
+
 import type { ClassStruct } from "./Typings";
 
 const ClassRegistryMap = Map<string, ClassStruct<any>>;
 
 const InstanceRegistryMap = Map<string, any>;
 
+const ScopeMap = Map<unknown, ScopeEnum | undefined>;
+
 export class Container {
   private static classMap = new ClassRegistryMap();
 
   private static instanceMap = new InstanceRegistryMap();
+
+  private static scopeMap = new ScopeMap();
+
+  public static Scope(scope: ScopeEnum): ClassDecoratorFunction {
+    return (Self, { kind, name }) => {
+      Container.scopeMap.set(name, scope);
+    };
+  }
 
   public static Inject<T>(identifier: string): ClassFieldDecoratorFunction {
     return (_self, { kind, name }) => {
@@ -24,7 +36,15 @@ export class Container {
     };
   }
 
-  public static produce<T extends any = any>(identifier: string): T {
+  public static produceForFreshScope(identifier: string) {
+    const Cls = Container.classMap.get(identifier);
+
+    const instance = new Cls();
+
+    return instance;
+  }
+
+  public static produceForSingletonScope(identifier: string) {
     if (Container.instanceMap.has(identifier)) {
       return Container.instanceMap.get(identifier);
     }
@@ -36,6 +56,14 @@ export class Container {
     Container.instanceMap.set(identifier, instance);
 
     return instance;
+  }
+
+  public static produce<T extends any = any>(identifier: string): T {
+    const scope = Container.scopeMap.get(identifier) ?? ScopeEnum.Singleton;
+
+    return scope === ScopeEnum.Singleton
+      ? Container.produceForSingletonScope(identifier)
+      : Container.produceForFreshScope(identifier);
   }
 
   public static register(identifier: string, cls: ClassStruct): void {
