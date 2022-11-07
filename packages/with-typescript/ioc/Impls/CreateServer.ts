@@ -21,8 +21,11 @@ class App {
 
       const server = http.createServer((req, res) => {
         let currentRequestHandled = false;
+        console.log("11-04 req.url: ", req.url);
         for (const info of collectedRequestHandlers) {
+          console.log("11-04 info.requestPath: ", info.requestPath);
           if (
+            // to match
             req.url === info.requestPath &&
             req.method === info.requestMethod.toLocaleUpperCase()
           ) {

@@ -1,4 +1,4 @@
-import type { FuncStruct, ClassStruct } from "./Typings";
+import type { ClassStruct } from "./Typings";
 
 const ClassRegistryMap = Map<string, ClassStruct<any>>;
 
@@ -27,6 +27,7 @@ export class Container {
   }
 
   static Provide(identifier?: string): ClassDecoratorFunction {
+    console.log("11-04 Provide identifier: ", identifier);
     return (Self, { kind, name }) => {
       if (kind === "class") {
         // @ts-expect-error
@@ -36,6 +37,9 @@ export class Container {
   }
 
   static produce<T extends any = any>(identifier: string): T {
+    console.log("11-04 identifier: ", identifier);
+    console.log(Container.classMap);
+    console.log(Container.instanceMap);
     if (Container.instanceMap.has(identifier)) {
       return Container.instanceMap.get(identifier);
     }

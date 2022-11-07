@@ -3,11 +3,12 @@ import { createApp } from "create-server";
 
 import { UserController } from "./Controllers/User.controller";
 import { PetController } from "./Controllers/Pet.controller";
+import { RootController } from "./Controllers/Root.controller";
 
 const Port = 5999;
 
 const app = createApp(Port, {
-  controllers: [UserController, PetController],
+  controllers: [UserController, PetController, RootController],
 });
 
 const requestAPI = (method: string, path: string, payload?: unknown) => {
@@ -60,7 +61,7 @@ app.then((server) => {
     requestAPI("POST", "/user/create", { name: "Harold", age: 18 });
 
     requestAPI("GET", "/pet/query");
-    // why do you name this bird like this?
+    // so your bird got the same name with yourself?
     requestAPI("POST", "/pet/create", { name: "Harold", kind: "bird", age: 3 });
   });
 });
