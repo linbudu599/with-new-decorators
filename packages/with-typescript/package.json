@@ -32,5 +32,8 @@
       "NODE_ENV": "development"
     },
     "ext": "ts,json"
+  },
+  "dependencies": {
+    "path-to-regexp": "^6.2.1"
   }
 }

@@ -57,6 +57,8 @@ app.then((server) => {
     console.log(`GET /pet/query at ${serverBaseUrl}/pet/query`);
     console.log(`POST /pet/create at ${serverBaseUrl}/pet/create \n`);
 
+    requestAPI("GET", "/");
+
     requestAPI("GET", "/user/query");
     requestAPI("POST", "/user/create", { name: "Harold", age: 18 });
 
