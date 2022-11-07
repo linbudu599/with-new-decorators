@@ -9,22 +9,22 @@ export class Container {
 
   private static instanceMap = new InstanceRegistryMap();
 
-  static Inject<T>(identifier: string): ClassFieldDecoratorFunction {
+  public static Inject<T>(identifier: string): ClassFieldDecoratorFunction {
     return (_self, { kind, name }) => {
       return (_initialValue) => Container.produce(identifier ?? String(name));
     };
   }
 
-  static Provide(identifier?: string): ClassDecoratorFunction {
+  public static Provide(identifier?: string): ClassDecoratorFunction {
     return (Self, { kind, name }) => {
       if (kind === "class") {
-        // @ts-expect-error
+        // @ts-ignore
         Container.register(identifier ?? name, Self);
       }
     };
   }
 
-  static produce<T extends any = any>(identifier: string): T {
+  public static produce<T extends any = any>(identifier: string): T {
     if (Container.instanceMap.has(identifier)) {
       return Container.instanceMap.get(identifier);
     }
@@ -38,7 +38,7 @@ export class Container {
     return instance;
   }
 
-  static register(identifier: string, cls: ClassStruct): void {
+  public static register(identifier: string, cls: ClassStruct): void {
     Container.classMap.set(identifier, cls);
   }
 }
