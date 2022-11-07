@@ -5,10 +5,13 @@ import { UserController } from "./Controllers/User.controller";
 import { PetController } from "./Controllers/Pet.controller";
 import { RootController } from "./Controllers/Root.controller";
 
+import { UserService } from "./Services/User.service";
+
 const Port = 5999;
 
 const app = createApp(Port, {
   controllers: [UserController, PetController, RootController],
+  services: [UserService],
 });
 
 const requestAPI = (method: string, path: string, payload?: unknown) => {

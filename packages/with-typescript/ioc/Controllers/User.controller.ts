@@ -7,28 +7,27 @@ import type { IncomingMessage, ServerResponse } from "http";
 
 @Controller("/user")
 export class UserController {
-  // TODO:
-  // @Inject("UserService")
-  // userService: UserService;
+  // @ts-expect-error
+  @Inject("UserService")
+  // @ts-expect-error
+  userService: UserService = {};
 
   @Get("/query")
   async queryUser(req: IncomingMessage, res: ServerResponse) {
-    // console.log(this.userService);
+    const data = await this.userService.QueryUser();
     return {
       success: true,
-      data: {
-        name: "Linbudu",
-        age: 18,
-      },
+      data,
     };
   }
 
   @Post("/create")
   async createUser(req: IncomingMessage, res: ServerResponse) {
     const body = await ServerUtils.parsePost(req);
+    const data = await this.userService.CreateUser(body);
     return {
       success: true,
-      data: body,
+      data,
     };
   }
 }

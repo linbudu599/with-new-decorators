@@ -6,6 +6,7 @@ import type { ClassStruct } from "./Typings";
 
 export type CreateAppOptions = {
   controllers: ClassStruct[];
+  services: ClassStruct[];
 };
 
 class App {

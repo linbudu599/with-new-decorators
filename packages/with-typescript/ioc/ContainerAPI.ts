@@ -11,7 +11,7 @@ class FSService {
 @Provide()
 class LoggerService {
   @Inject("FSService")
-  fs: FSService;
+  fs: FSService = {};
 
   log(...msgs) {
     this.fs.write("log.txt", msgs);
@@ -31,22 +31,23 @@ class UserService {
 
 class UserModule {
   @Inject("LoggerService")
-  logger: LoggerService;
+  logger: LoggerService = {};
 
+  // TS can only replace field value with initialValue
+  // PR: https://github.com/microsoft/TypeScript/pull/50820#issuecomment-1305265363
   @Inject("UserService")
-  userService = {};
+  userService: UserService = {};
 
   // This sample seems to be incomplete for typescript
   QueryUser() {
-    // const res = this.userService.query();
-    console.log("11-07 this.userService: ", this.userService);
+    const res = this.userService.query();
 
-    // this.logger.log(`UserModule.QueryUser: ${JSON.stringify(res)}`);
-    // return res;
+    this.logger.log(`UserModule.QueryUser: ${JSON.stringify(res)}`);
+    return res;
   }
 }
-new UserModule().QueryUser();
-// assert.deepStrictEqual(new UserModule().QueryUser(), {
-//   name: "linbudu",
-//   age: 18,
-// });
+
+assert.deepStrictEqual(new UserModule().QueryUser(), {
+  name: "linbudu",
+  age: 18,
+});

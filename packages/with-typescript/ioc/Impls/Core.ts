@@ -62,6 +62,8 @@ export class RouterCollector {
     const impls = controllerMethods.map((methodName) => {
       const requestHandle: FuncStruct = proto[methodName];
 
+      const boundRequestHandle: FuncStruct = requestHandle.bind(instance);
+
       const requestMethod = RouterCollector.methodMap.get(requestHandle);
 
       const requestPath = `${controllerAPIRootPath}${RouterCollector.pathMap.get(
@@ -69,7 +71,7 @@ export class RouterCollector {
       )}`;
 
       return {
-        requestHandle,
+        requestHandle: boundRequestHandle,
         requestMethod,
         requestPath,
       };
