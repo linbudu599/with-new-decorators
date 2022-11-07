@@ -34,16 +34,18 @@ class UserModule {
   logger: LoggerService;
 
   @Inject("UserService")
-  userService: UserService;
+  userService = {};
 
   // This sample seems to be incomplete for typescript
   QueryUser() {
     // const res = this.userService.query();
+    console.log("11-07 this.userService: ", this.userService);
+
     // this.logger.log(`UserModule.QueryUser: ${JSON.stringify(res)}`);
     // return res;
   }
 }
-
+new UserModule().QueryUser();
 // assert.deepStrictEqual(new UserModule().QueryUser(), {
 //   name: "linbudu",
 //   age: 18,

@@ -28,10 +28,9 @@ const requestAPI = (method: string, path: string, payload?: unknown) => {
         });
 
         res.on("end", () => {
-          console.log(
-            `${method.toUpperCase()} ${path} response: `,
-            Buffer.concat(chunks).toString()
-          );
+          const response = Buffer.concat(chunks).toString();
+          console.log(`${method.toUpperCase()} ${path} response: `, response);
+          resolve(response);
         });
       }
     );

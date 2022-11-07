@@ -11,23 +11,11 @@ export class Container {
 
   static Inject<T>(identifier: string): ClassFieldDecoratorFunction {
     return (_self, { kind, name }) => {
-      if (kind === "field") {
-        return (_initialValue) => {
-          if (typeof _initialValue !== "undefined") {
-            console.warn(
-              `The decorated field ${String(
-                name
-              )} has been initialized, the initial value will be overwritten.`
-            );
-          }
-          return Container.produce(identifier ?? String(name));
-        };
-      }
+      return (_initialValue) => Container.produce(identifier ?? String(name));
     };
   }
 
   static Provide(identifier?: string): ClassDecoratorFunction {
-    console.log("11-04 Provide identifier: ", identifier);
     return (Self, { kind, name }) => {
       if (kind === "class") {
         // @ts-expect-error
@@ -37,9 +25,6 @@ export class Container {
   }
 
   static produce<T extends any = any>(identifier: string): T {
-    console.log("11-04 identifier: ", identifier);
-    console.log(Container.classMap);
-    console.log(Container.instanceMap);
     if (Container.instanceMap.has(identifier)) {
       return Container.instanceMap.get(identifier);
     }
