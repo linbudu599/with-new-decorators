@@ -23,5 +23,6 @@
       "create-server": ["./ioc/Impls/CreateServer"]
     }
   },
-  "include": ["./**/*.ts"]
+  "include": ["./**/*.ts"],
+  "exclude": ["_samples", "advanced"]
 }
