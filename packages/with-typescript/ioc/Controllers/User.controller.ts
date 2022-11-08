@@ -10,8 +10,7 @@ import { LogMiddleware } from "../Middlewares/Log";
 export class UserController {
   // @ts-expect-error
   @Inject("UserService")
-  // @ts-expect-error
-  userService: UserService = {};
+  userService: UserService;
 
   @Get("/query")
   @Middleware([LogMiddleware])

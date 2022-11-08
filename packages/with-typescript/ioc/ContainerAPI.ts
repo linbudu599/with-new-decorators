@@ -13,7 +13,7 @@ class FSService {
 @Provide()
 class LoggerService {
   @Inject("FSService")
-  fs: FSService = {};
+  fs: FSService;
 
   log(...msgs) {
     this.fs.write("log.txt", msgs);
@@ -33,12 +33,10 @@ class UserService {
 
 class UserModule {
   @Inject("LoggerService")
-  logger: LoggerService = {};
+  logger: LoggerService;
 
-  // TS can only replace field value with initialValue
-  // PR: https://github.com/microsoft/TypeScript/pull/50820#issuecomment-1305265363
   @Inject("UserService")
-  userService: UserService = {};
+  userService: UserService;
 
   // This sample seems to be incomplete for typescript
   QueryUser() {
