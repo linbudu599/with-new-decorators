@@ -19,5 +19,4 @@ class Foo {
 }
 
 assert.equal(new Foo().count, 1198);
-// This doesnot work
 assert.equal(new Foo().init, 1000);

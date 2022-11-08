@@ -10,7 +10,7 @@ UPDATE: You can install developing version of typescript from tarball version li
 
 ```json
 "devDependencies": {
-   "typescript": "npm:@typescript-deploys/pr-build@5.0.0-pr-50820-27"
+   "typescript": "npm:@typescript-deploys/pr-build@5.0.0-pr-50820-31"
 }
 ```
 
