@@ -10,11 +10,11 @@ UPDATE: You can install developing version of typescript from tarball version li
 
 ```json
 "devDependencies": {
-  "typescript": "https://typescript.visualstudio.com/cf7ac146-d525-443c-b23c-0d58337efebc/_apis/build/builds/137418/artifacts?artifactName=tgz&fileId=AB77B9F7C08B0A35E9947DAD772F3CFFC61A6E13DD551F32AB732DDCDD7DF4F102&fileName=/typescript-5.0.0-insiders.20221101.tgz"
+   "typescript": "npm:@typescript-deploys/pr-build@5.0.0-pr-50820-27"
 }
 ```
 
-Completed Samples:
+IoC related samples:
 
 - [IoC Related Samples](packages/with-typescript/ioc/)
 
@@ -70,5 +70,5 @@ Configure your `.babelrc` file like below:
 
 Then you can use `babel-node` to execute javascript file, but `nodemon` can bring you better DX.
 
-- [Common Samples](packages/with-babel/samples/)
-- [IoC Related Samples](packages/with-babel/ioc)
+- [Common samples](packages/with-babel/samples/)
+- [IoC related samples](packages/with-babel/ioc)
