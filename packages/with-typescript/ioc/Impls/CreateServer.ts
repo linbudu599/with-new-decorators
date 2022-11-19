@@ -1,10 +1,12 @@
 import http from "http";
+import { pathToRegexp, match } from "path-to-regexp";
 import { RouterCollector } from "core";
 
 import type { ClassStruct } from "./Typings";
 
 export type CreateAppOptions = {
   controllers: ClassStruct[];
+  services: ClassStruct[];
 };
 
 class App {
@@ -21,11 +23,14 @@ class App {
 
       const server = http.createServer((req, res) => {
         let currentRequestHandled = false;
+
         for (const info of collectedRequestHandlers) {
-          if (
-            req.url === info.requestPath &&
-            req.method === info.requestMethod.toLocaleUpperCase()
-          ) {
+          const pathRegexp = pathToRegexp(info.requestPath);
+          const pathMatched = pathRegexp.test(req.url);
+          const methodMatched =
+            req.method === info.requestMethod.toLocaleUpperCase();
+
+          if (pathMatched && methodMatched) {
             currentRequestHandled = true;
             info.requestHandle(req, res).then((result) => {
               res.writeHead(200, { "Content-Type": "application/json" });

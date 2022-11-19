@@ -1,7 +1,7 @@
 import type { IncomingMessage } from "http";
 
 export class ServerUtils {
-  static async parsePost(req: IncomingMessage) {
+  public static async parsePost(req: IncomingMessage) {
     return new Promise((resolve, reject) => {
       const data = [];
       req.on("data", (chunk) => {
@@ -16,4 +16,9 @@ export class ServerUtils {
       });
     });
   }
+}
+
+export enum ScopeEnum {
+  Fresh = "Fresh",
+  Singleton = "Singleton",
 }

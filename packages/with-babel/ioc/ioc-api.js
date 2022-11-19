@@ -62,7 +62,7 @@ class RouterCollector {
       )}`;
 
       return {
-        requestHandle,
+        requestHandle: requestHandle.bind(instance),
         requestMethod,
         requestPath,
       };

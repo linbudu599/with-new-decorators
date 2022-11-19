@@ -3,11 +3,15 @@ import { createApp } from "create-server";
 
 import { UserController } from "./Controllers/User.controller";
 import { PetController } from "./Controllers/Pet.controller";
+import { RootController } from "./Controllers/Root.controller";
+
+import { UserService } from "./Services/User.service";
 
 const Port = 5999;
 
 const app = createApp(Port, {
-  controllers: [UserController, PetController],
+  controllers: [UserController, PetController, RootController],
+  services: [UserService],
 });
 
 const requestAPI = (method: string, path: string, payload?: unknown) => {
@@ -27,10 +31,9 @@ const requestAPI = (method: string, path: string, payload?: unknown) => {
         });
 
         res.on("end", () => {
-          console.log(
-            `${method.toUpperCase()} ${path} response: `,
-            Buffer.concat(chunks).toString()
-          );
+          const response = Buffer.concat(chunks).toString();
+          console.log(`${method.toUpperCase()} ${path} response: `, response);
+          resolve(response);
         });
       }
     );
@@ -56,11 +59,13 @@ app.then((server) => {
     console.log(`GET /pet/query at ${serverBaseUrl}/pet/query`);
     console.log(`POST /pet/create at ${serverBaseUrl}/pet/create \n`);
 
+    requestAPI("GET", "/");
+
     requestAPI("GET", "/user/query");
     requestAPI("POST", "/user/create", { name: "Harold", age: 18 });
 
     requestAPI("GET", "/pet/query");
-    // why do you name this bird like this?
+    // so your bird got the same name with yourself?
     requestAPI("POST", "/pet/create", { name: "Harold", kind: "bird", age: 3 });
   });
 });

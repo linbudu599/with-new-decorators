@@ -1,5 +1,5 @@
-import { Container } from "container";
-import type { FuncStruct, ClassStruct } from "./Typings";
+import type { IncomingMessage, ServerResponse } from "http";
+import type { FuncStruct, ClassStruct, MiddlewareStruct } from "./Typings";
 
 enum RequestType {
   Get = "GET",
@@ -9,19 +9,21 @@ enum RequestType {
 type CollectedControllerInfo = {
   requestPath: string;
   requestMethod: RequestType;
-  requestHandle: FuncStruct;
+  requestHandle: FuncStruct<any>;
 };
 
 const MethodMap = Map<FuncStruct, RequestType>;
 const PathMap = Map<FuncStruct, string>;
+const MiddlewareMap = Map<FuncStruct, MiddlewareStruct[]>;
 const ControllerMap = Map<ClassStruct, string>;
 
 export class RouterCollector {
   private static controllerMap = new ControllerMap();
   private static methodMap = new MethodMap();
   private static pathMap = new PathMap();
+  private static middlewareMap = new MiddlewareMap();
 
-  static RouteDecoratorFactory(
+  public static RouteDecoratorFactory(
     method: RequestType
   ): (path: string) => ClassMethodDecoratorFunction {
     return (path) => {
@@ -34,24 +36,37 @@ export class RouterCollector {
     };
   }
 
-  static Get(path: string): ClassMethodDecoratorFunction {
+  /**
+   * A really simple middleware registry, only executed after original request handle returned
+   */
+  public static Middleware(
+    mws: MiddlewareStruct[]
+  ): ClassMethodDecoratorFunction {
+    return (self, { kind, name }) => {
+      if (kind === "method") {
+        RouterCollector.middlewareMap.set(self, mws);
+      }
+    };
+  }
+
+  public static Get(path: string): ClassMethodDecoratorFunction {
     return RouterCollector.RouteDecoratorFactory(RequestType.Get)(path);
   }
 
-  static Post(path: string): ClassMethodDecoratorFunction {
+  public static Post(path: string): ClassMethodDecoratorFunction {
     return RouterCollector.RouteDecoratorFactory(RequestType.Post)(path);
   }
 
-  static Controller(path = ""): ClassDecoratorFunction {
+  public static Controller(path = ""): ClassDecoratorFunction {
     return (Self, { kind, name }) => {
-      // @ts-expect-error
+      // @ts-ignore use ignore as expect-error not working correctly here
       RouterCollector.controllerMap.set(Self, path);
       // @ts-expect-error
       Container.register(name, Self);
     };
   }
 
-  static collect(instance: unknown): CollectedControllerInfo[] {
+  public static collect(instance: unknown): CollectedControllerInfo[] {
     const proto = Object.getPrototypeOf(instance);
 
     const controllerAPIRootPath = RouterCollector.controllerMap.get(
@@ -63,13 +78,33 @@ export class RouterCollector {
     );
 
     const impls = controllerMethods.map((methodName) => {
-      const requestHandle: FuncStruct = proto[methodName];
+      const _requestHandle: FuncStruct = proto[methodName];
 
-      const requestMethod = RouterCollector.methodMap.get(requestHandle);
+      const boundRequestHandle: FuncStruct = _requestHandle.bind(instance);
+
+      const requestMethod = RouterCollector.methodMap.get(_requestHandle)!;
 
       const requestPath = `${controllerAPIRootPath}${RouterCollector.pathMap.get(
-        requestHandle
+        _requestHandle
       )}`;
+
+      const middlewares =
+        RouterCollector.middlewareMap.get(_requestHandle) ?? [];
+
+      const requestHandle = async (
+        req: IncomingMessage,
+        res: ServerResponse
+      ) => {
+        const result = await boundRequestHandle(req, res);
+
+        if (middlewares.length) {
+          middlewares.forEach((mw) => {
+            mw(req, res, result);
+          });
+        }
+
+        return result;
+      };
 
       return {
         requestHandle,

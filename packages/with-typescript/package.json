@@ -8,7 +8,7 @@
     "nodemon": "^2.0.20",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.1.0",
-    "typescript": "https://typescript.visualstudio.com/cf7ac146-d525-443c-b23c-0d58337efebc/_apis/build/builds/137418/artifacts?artifactName=tgz&fileId=AB77B9F7C08B0A35E9947DAD772F3CFFC61A6E13DD551F32AB732DDCDD7DF4F102&fileName=/typescript-5.0.0-insiders.20221101.tgz"
+    "typescript": "https://typescript.visualstudio.com/cf7ac146-d525-443c-b23c-0d58337efebc/_apis/build/builds/137898/artifacts?artifactName=tgz&fileId=6FB2BB103E56A9586D2E2E87A6EFA518FA1DF0DCEAB1DA2E42D01B659F3DDE6602&fileName=/typescript-5.0.0-insiders.20221108.tgz"
   },
   "scripts": {
     "build": "tsc"
@@ -32,5 +32,8 @@
       "NODE_ENV": "development"
     },
     "ext": "ts,json"
+  },
+  "dependencies": {
+    "path-to-regexp": "^6.2.1"
   }
 }
