@@ -1,3 +1,4 @@
+import { Container } from "container";
 import type { IncomingMessage, ServerResponse } from "http";
 import type { FuncStruct, ClassStruct, MiddlewareStruct } from "./Typings";
 
@@ -61,7 +62,7 @@ export class RouterCollector {
     return (Self, { kind, name }) => {
       // @ts-ignore use ignore as expect-error not working correctly here
       RouterCollector.controllerMap.set(Self, path);
-      // @ts-expect-error
+      // @ts-ignore use ignore as expect-error not working correctly here
       Container.register(name, Self);
     };
   }
