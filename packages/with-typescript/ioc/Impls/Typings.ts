@@ -6,3 +6,6 @@ export type FuncStruct<
 export type ClassStruct<TInstanceType extends unknown = unknown> = new (
   ...args: any[]
 ) => TInstanceType;
+
+export type CommonClassStruct<TInstanceType extends unknown = unknown> =
+  abstract new (...args: any[]) => TInstanceType;

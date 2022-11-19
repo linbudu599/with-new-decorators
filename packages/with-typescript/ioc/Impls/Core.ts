@@ -1,3 +1,4 @@
+import { Container } from "container";
 import type { FuncStruct, ClassStruct } from "./Typings";
 
 enum RequestType {
@@ -45,6 +46,8 @@ export class RouterCollector {
     return (Self, { kind, name }) => {
       // @ts-expect-error
       RouterCollector.controllerMap.set(Self, path);
+      // @ts-expect-error
+      Container.register(name, Self);
     };
   }
 
