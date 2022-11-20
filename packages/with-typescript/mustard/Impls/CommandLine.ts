@@ -2,6 +2,8 @@
 import { ClassStruct, Container } from "./Core";
 
 export abstract class CommandStruct {
+  abstract example?: () => string;
+
   abstract run(): void;
 }
 
@@ -38,9 +40,17 @@ export class CLI {
   }
 
   public registerCommand(Commands: ClassStruct[]) {
-    // this.commandRegistry.set(command.constructor.name, command);
-    Commands.forEach((Command) => {
-      // this.commandRegistry.set(Command.name, new Command());
+    this.internalRegisterCommand(Commands);
+  }
+
+  private internalRegisterCommand(Commands: ClassStruct[]) {
+    const CommandToLoad = Commands.map((Command) =>
+      Container.commandRegistry.get(Command.name)
+    );
+
+    // 然后将这些命令注册到命令注册表中
+    CommandToLoad.forEach((Command) => {
+      this.commandRegistry.set(Command.commandName, Command);
     });
   }
 
@@ -50,19 +60,11 @@ export class CLI {
       console.log(Command.name);
     });
 
-    // 首先确定本次要被加载的命令
-    const CommandToLoad = Commands.map((Command) =>
-      Container.commandRegistry.get(Command.name)
-    );
-
-    // 然后将这些命令注册到命令注册表中
-    CommandToLoad.forEach((Command) => {
-      this.commandRegistry.set(Command.commandName, Command);
-    });
-
-    // console.log("CommandToLoad: ", CommandToLoad);
-
-    // 解析这些命令及其内部声明的选项
+    // 注册命令
+    this.internalRegisterCommand(Commands);
+    // 实例化 Parser
+    // 初始化配置
+    // 检查环境
   }
 
   private dispatchCommand(command: string, args: string[]) {
@@ -71,6 +73,7 @@ export class CLI {
     // 在这一步应当完成对所有内部选项值的填充
     const handler = new Command();
 
+    // fork 下 yargs parser
     handler.dry = true;
 
     // 执行命令
@@ -82,4 +85,6 @@ export class CLI {
     const [command, ...commandArgs] = args;
     this.dispatchCommand(command, commandArgs);
   }
+
+  public configure() {}
 }
