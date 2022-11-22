@@ -1,4 +1,4 @@
-import { Command, Option, Options } from "./Impls/Decorators";
+import { Command, RootCommand, Option, Options } from "./Impls/Decorators";
 import { CLI, BaseCommand, CommandStruct } from "./Impls/CommandLine";
 
 @Command("run")
@@ -33,8 +33,24 @@ class CheckCommand extends BaseCommand {
   }
 }
 
-const cli = new CLI("LinbuduLab CLI", [RunCommand]);
+@RootCommand()
+class RootCommandHandle extends BaseCommand {
+  constructor() {
+    super();
+  }
+
+  @Option("dry")
+  public dry;
+
+  public run(): void {
+    console.log("Root Command! ", this.dry);
+  }
+}
+
+const cli = new CLI("LinbuduLab CLI", [RootCommandHandle, RunCommand]);
 
 cli.registerCommand([CheckCommand]);
 
-cli.init();
+cli.start();
+
+cli.configure({});

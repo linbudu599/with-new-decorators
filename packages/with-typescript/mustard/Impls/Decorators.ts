@@ -1,3 +1,3 @@
 import { Container } from "./Core";
 
-export const { Command, Option, Options } = Container;
+export const { Command, RootCommand, Option, Options } = Container;

@@ -12,6 +12,18 @@ const CommandRrgistry = Map<
   {
     commandName: string;
     class: any;
+    root: boolean;
+  }
+>;
+
+const OptionRrgistry = Map<
+  string,
+  {
+    optionName: string;
+    commandName: string;
+    class: any;
+    // 是否注入全部
+    eager: boolean;
   }
 >;
 
@@ -33,10 +45,23 @@ export class Container {
       Container.commandRegistry.set(context.name, {
         commandName,
         class: target,
+        root: false,
       });
     };
   }
 
+  public static RootCommand(): ClassDecoratorFunction {
+    return (target, context) => {
+      // @ts-ignore
+      Container.commandRegistry.set(context.name, {
+        commandName: "root",
+        class: target,
+        root: true,
+      });
+    };
+  }
+
+  // 这里并不能拿到 Class 信息
   public static Option(optionName: string): ClassFieldDecoratorFunction {
     return () => {};
   }

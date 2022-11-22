@@ -33,13 +33,31 @@ export class BaseCommand {
   protected readonly utils: BuiltInUtils;
 }
 
+export interface ICLIConfiguration {
+  enableUsage: boolean;
+  enableVersion: boolean;
+
+  debug: boolean;
+}
+
 export class CLI {
   public commandRegistry = new Map<string, any>();
 
-  constructor(private readonly identifier: string, Commands: ClassStruct[]) {
+  // only one key!
+  public rootCommandRegistry = new Map<string, any>();
+
+  constructor(
+    private readonly identifier: string,
+    Commands: ClassStruct[],
+    private options?: ICLIConfiguration
+  ) {
     this.initialize(Commands);
     // debug 模式
     console.log(`CLI for ${identifier} initialized`);
+  }
+
+  public configure(overrides: Partial<ICLIConfiguration>) {
+    Object.assign(this.options ?? {}, overrides ?? {});
   }
 
   public registerCommand(Commands: ClassStruct[]) {
@@ -53,7 +71,10 @@ export class CLI {
 
     // 然后将这些命令注册到命令注册表中
     CommandToLoad.forEach((Command) => {
-      this.commandRegistry.set(Command.commandName, Command);
+      // 看起来需要多注册一个内部 Options
+      Command.root
+        ? this.rootCommandRegistry.set("root", Command)
+        : this.commandRegistry.set(Command.commandName, Command);
     });
   }
 
@@ -70,11 +91,7 @@ export class CLI {
     // 检查环境
   }
 
-  private dispatchCommand(command: string[], args: Dictionary) {
-    const [main, ...subs] = command;
-
-    const Command = this.commandRegistry.get(main).class;
-
+  private executeCommand(Command: any, args: Dictionary) {
     // 在这一步应当完成对所有内部选项值的填充
     const handler = new Command();
 
@@ -92,18 +109,38 @@ export class CLI {
     handler.run();
   }
 
-  public init() {
+  private dispatchCommand(command: string[], args: Dictionary) {
+    // todo: sub command
+    const [main, ...subs] = command;
+
+    const Command = this.commandRegistry.get(main).class;
+
+    this.executeCommand(Command, args);
+  }
+
+  private useRootCommandIfSpecified(parsedArgs) {
+    if (this.rootCommandRegistry.size > 0) {
+      const RootCommand = this.rootCommandRegistry.get("root").class;
+      this.executeCommand(RootCommand, parsedArgs);
+    }
+  }
+
+  // 调用此方法后，再修改配置和添加命令将不会生效
+  public start() {
     const args = process.argv.slice(2);
     const parsed = parse(args);
+    console.log("11-22 parsed: ", parsed);
 
     const { _, ...parsedArgs } = parsed;
 
     if (_.length === 0) {
-      // 如果启用了 help 才打印收集的提示，否则报错
+      // 如果指定了 RootCommand，则调用
+      // 否则检查是否启用了 enableHelp
+      // 如果都没有，NoRootHandlerError
+      this.useRootCommandIfSpecified(parsedArgs);
+      return;
     }
 
     this.dispatchCommand(_ as string[], parsedArgs);
   }
-
-  public configure() {}
 }
