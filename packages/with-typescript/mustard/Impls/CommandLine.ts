@@ -1,4 +1,4 @@
-// import parser from "yargs-parser";
+import parse from "yargs-parser";
 import { ClassStruct, Container } from "./Core";
 
 export abstract class CommandStruct {
@@ -6,6 +6,8 @@ export abstract class CommandStruct {
 
   abstract run(): void;
 }
+
+type Dictionary<T = unknown> = Record<string, T>;
 
 type PackageManagerUtils = {
   install: () => void;
@@ -36,6 +38,7 @@ export class CLI {
 
   constructor(private readonly identifier: string, Commands: ClassStruct[]) {
     this.initialize(Commands);
+    // debug 模式
     console.log(`CLI for ${identifier} initialized`);
   }
 
@@ -67,14 +70,23 @@ export class CLI {
     // 检查环境
   }
 
-  private dispatchCommand(command: string, args: string[]) {
-    const Command = this.commandRegistry.get(command).class;
+  private dispatchCommand(command: string[], args: Dictionary) {
+    const [main, ...subs] = command;
+
+    const Command = this.commandRegistry.get(main).class;
 
     // 在这一步应当完成对所有内部选项值的填充
     const handler = new Command();
 
-    // fork 下 yargs parser
-    handler.dry = true;
+    const handlerOptions = Reflect.ownKeys(handler);
+
+    // 更正确的应该是拿到内部所有被 Option / Options 装饰的属性进行处理
+    // 以后再🔐！
+    handlerOptions.forEach((optionKey) => {
+      if (optionKey in args) {
+        Reflect.set(handler, optionKey, args[optionKey as string]);
+      }
+    });
 
     // 执行命令
     handler.run();
@@ -82,8 +94,15 @@ export class CLI {
 
   public init() {
     const args = process.argv.slice(2);
-    const [command, ...commandArgs] = args;
-    this.dispatchCommand(command, commandArgs);
+    const parsed = parse(args);
+
+    const { _, ...parsedArgs } = parsed;
+
+    if (_.length === 0) {
+      // 如果启用了 help 才打印收集的提示，否则报错
+    }
+
+    this.dispatchCommand(_ as string[], parsedArgs);
   }
 
   public configure() {}
