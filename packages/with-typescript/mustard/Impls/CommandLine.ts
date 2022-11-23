@@ -102,10 +102,12 @@ export class CLI {
     handlerOptions.forEach((optionKey) => {
       const value = Reflect.get(handler, optionKey);
 
-      const [_, injectKey] = value.split("_");
+      const [_, injectKey, rule] = value.split("_");
 
       if (injectKey in args) {
-        Reflect.set(handler, optionKey, args[injectKey]);
+        const argValue = args[injectKey];
+        // validate here
+        Reflect.set(handler, optionKey, argValue);
       }
 
       if (value === "OptionsToInject") {
