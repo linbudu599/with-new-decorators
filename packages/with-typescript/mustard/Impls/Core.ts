@@ -16,7 +16,7 @@ const CommandRrgistry = Map<
   }
 >;
 
-const OptionRrgistry = Map<
+const OptionRegistry = Map<
   string,
   {
     optionName: string;
@@ -39,7 +39,10 @@ export class Container {
 
   public static optionRegistry = new CommandRrgistry();
 
-  public static Command(commandName: string): ClassDecoratorFunction {
+  public static Command(
+    commandName: string,
+    subCommands?: any[]
+  ): ClassDecoratorFunction {
     return (target, context) => {
       // @ts-ignore
       Container.commandRegistry.set(context.name, {

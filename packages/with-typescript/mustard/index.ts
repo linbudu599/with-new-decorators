@@ -2,6 +2,20 @@ import { Command, RootCommand, Option, Options } from "./Impls/Decorators";
 import { CLI, BaseCommand, CommandStruct } from "./Impls/CommandLine";
 import { Validator } from "./Impls/Validator";
 
+@Command("sync")
+class RunSyncCommand extends BaseCommand implements CommandStruct {
+  constructor() {
+    super();
+  }
+
+  @Option("dry", Validator.Required().String().MinLength(3).MaxLength(5))
+  public dryOption;
+
+  public run(): void {
+    console.log("Nested! ", this.dryOption);
+  }
+}
+
 @Command("run")
 class RunCommand extends BaseCommand implements CommandStruct {
   constructor() {
@@ -59,3 +73,10 @@ cli.registerCommand([CheckCommand]);
 cli.start();
 
 cli.configure({});
+
+/**
+ * - alias support
+ * - nested commands support
+ * - collect commands info for usage generation
+ * - validator related
+ */
