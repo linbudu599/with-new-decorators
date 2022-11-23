@@ -100,8 +100,16 @@ export class CLI {
     // 更正确的应该是拿到内部所有被 Option / Options 装饰的属性进行处理
     // 以后再🔐！
     handlerOptions.forEach((optionKey) => {
-      if (optionKey in args) {
-        Reflect.set(handler, optionKey, args[optionKey as string]);
+      const value = Reflect.get(handler, optionKey);
+
+      const [_, injectKey] = value.split("_");
+
+      if (injectKey in args) {
+        Reflect.set(handler, optionKey, args[injectKey]);
+      }
+
+      if (value === "OptionsToInject") {
+        Reflect.set(handler, optionKey, args);
       }
     });
 
@@ -118,26 +126,33 @@ export class CLI {
     this.executeCommand(Command, args);
   }
 
-  private useRootCommandIfSpecified(parsedArgs) {
+  private tryExecuteRootCommandOrPrintUsage(parsedArgs) {
+    // 如果指定了 RootCommand，则调用
+    // 否则检查是否启用了 enableHelp
+    // 如果都没有，NoRootHandlerError
     if (this.rootCommandRegistry.size > 0) {
       const RootCommand = this.rootCommandRegistry.get("root").class;
       this.executeCommand(RootCommand, parsedArgs);
+    } else if (this.options.enableUsage) {
+      this.printUsageIfEnabled();
+    } else {
+      // throws
     }
+  }
+
+  private printUsageIfEnabled() {
+    console.log("this is help info");
   }
 
   // 调用此方法后，再修改配置和添加命令将不会生效
   public start() {
     const args = process.argv.slice(2);
     const parsed = parse(args);
-    console.log("11-22 parsed: ", parsed);
 
     const { _, ...parsedArgs } = parsed;
 
     if (_.length === 0) {
-      // 如果指定了 RootCommand，则调用
-      // 否则检查是否启用了 enableHelp
-      // 如果都没有，NoRootHandlerError
-      this.useRootCommandIfSpecified(parsedArgs);
+      this.tryExecuteRootCommandOrPrintUsage(parsedArgs);
       return;
     }
 

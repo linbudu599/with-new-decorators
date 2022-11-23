@@ -62,12 +62,22 @@ export class Container {
   }
 
   // 这里并不能拿到 Class 信息
-  public static Option(optionName: string): ClassFieldDecoratorFunction {
-    return () => {};
+  // Accessor Decorator 的 target 应该可以，但需要额外的接受成本？
+  // 要让 Command 和 Option 关联的话，最简单的方式应该是使用 Entangled
+  // 或者让 Command 变成 getter，每次访问分派...
+  // todo: 这里的 optionName 暂时用不上
+  public static Option(optionName?: string): ClassFieldDecoratorFunction {
+    // 试试用一个占位值标记 Option
+    // todo: Symbol
+    return (_, { name }) =>
+      () =>
+        optionName
+          ? `OptionToInject_${optionName}`
+          : `OptionToInject_${String(name)}`;
   }
 
   public static Options(): ClassFieldDecoratorFunction {
-    return () => {};
+    return () => () => "OptionsToInject";
   }
 
   public static register(identifier: string, cls: ClassStruct): void {
@@ -76,7 +86,6 @@ export class Container {
 
   public static collect(instance: unknown) {}
 
-  // produceForFreshScope
   public static produce<T extends any = any>(identifier: string): T {
     const Cls = Container.classMap.get(identifier);
 

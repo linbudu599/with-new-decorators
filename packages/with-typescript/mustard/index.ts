@@ -12,10 +12,14 @@ class RunCommand extends BaseCommand implements CommandStruct {
   }
 
   @Option("dry")
-  public dry;
+  public dryOption;
+
+  @Options()
+  public allOptions;
 
   public run(): void {
-    console.log("Hello World! ", this.dry);
+    console.log("Hello World! ", this.dryOption);
+    console.log("All Options! ", this.allOptions);
   }
 }
 
