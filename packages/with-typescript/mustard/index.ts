@@ -30,9 +30,8 @@ class RunCommand extends BaseCommand implements CommandStruct {
     return `run xxx --dry`;
   }
 
-  @Option("dry", Validator.Required().String().MinLength(3).MaxLength(5))
-  public dryOption;
-
+  @Option("dry", "d")
+  // @Option("dry", Validator.Required().String().MinLength(3).MaxLength(5))  public dryOption;
   @Options()
   public allOptions;
 

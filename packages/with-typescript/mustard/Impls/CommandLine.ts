@@ -105,16 +105,12 @@ export class CLI {
 
       const instance = new RootCommand();
 
-      console.log(Reflect.ownKeys(instance));
-
       const handlerOptions = Reflect.ownKeys(instance);
 
       handlerOptions.forEach((optionKey) => {
         const value = Reflect.get(instance, optionKey);
 
         const { optionName: injectKey, description } = value;
-
-        console.log(`injectKey: ${injectKey}`, `desc: ${description}`);
       });
 
       const usage = RootCommand.usage?.();
@@ -130,6 +126,7 @@ export class CLI {
       const collected = {
         commandName: Command.commandName,
         usage: Command.class.usage?.(),
+        instance: new Command.class(),
       };
 
       commonUsages.push(collected);
@@ -145,7 +142,19 @@ export class CLI {
     }, []);
 
     dedupedCommonUsages.forEach((item) => {
-      console.log(`[${item.commandName}] ${item.usage}`);
+      console.log(`[${item.commandName}]
+usage: ${item.usage}
+`);
+      const options = Reflect.ownKeys(item.instance);
+
+      options.forEach((optionKey) => {
+        const value = Reflect.get(item.instance, optionKey);
+
+        const { optionName: injectKey, description } = value;
+
+        console.log("injectKey: ", injectKey);
+        console.log("description: ", description);
+      });
     });
 
     rootUsage.forEach((item) => {
