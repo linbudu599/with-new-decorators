@@ -8,7 +8,7 @@ class RunSyncCommand extends BaseCommand implements CommandStruct {
     super();
   }
 
-  @Option("dry", Validator.Required().String().MinLength(3).MaxLength(5))
+  // @Option("dry", Validator.Required().String().MinLength(3).MaxLength(5))
   public dryOption;
 
   static usage() {
