@@ -71,10 +71,11 @@ export class CLI {
 
     // 然后将这些命令注册到命令注册表中
     CommandToLoad.forEach((Command) => {
-      // 看起来需要多注册一个内部 Options
       Command.root
         ? this.rootCommandRegistry.set("root", Command)
         : this.commandRegistry.set(Command.commandName, Command);
+
+      Command.aliasName && this.commandRegistry.set(Command.aliasName, Command);
     });
   }
 
@@ -86,9 +87,70 @@ export class CLI {
 
     // 注册命令
     this.internalRegisterCommand(Commands);
+
     // 实例化 Parser
     // 初始化配置
     // 检查环境
+  }
+
+  private collectCommandUsage() {
+    // 如何在这一步收集 options 的描述？
+    // 如果每个命令实例化一个肯定句就可以了嗷
+    const rootUsage = [];
+    const commandNames = new Set();
+    const commonUsages = [];
+
+    if (this.rootCommandRegistry.size > 0) {
+      const RootCommand = this.rootCommandRegistry.get("root").class;
+
+      const instance = new RootCommand();
+
+      console.log(Reflect.ownKeys(instance));
+
+      const handlerOptions = Reflect.ownKeys(instance);
+
+      handlerOptions.forEach((optionKey) => {
+        const value = Reflect.get(instance, optionKey);
+
+        const { optionName: injectKey, description } = value;
+
+        console.log(`injectKey: ${injectKey}`, `desc: ${description}`);
+      });
+
+      const usage = RootCommand.usage?.();
+      rootUsage.push({
+        commandName: "root",
+        usage,
+      });
+    }
+
+    this.commandRegistry.forEach((Command) => {
+      if (commandNames.has(Command)) return;
+
+      const collected = {
+        commandName: Command.commandName,
+        usage: Command.class.usage?.(),
+      };
+
+      commonUsages.push(collected);
+
+      commandNames.add(Command.commandName);
+    });
+
+    // dedupe
+    const dedupedCommonUsages = commonUsages.reduce((prev, cur) => {
+      if (prev.find((item) => item.commandName === cur.commandName))
+        return prev;
+      return [...prev, cur];
+    }, []);
+
+    dedupedCommonUsages.forEach((item) => {
+      console.log(`[${item.commandName}] ${item.usage}`);
+    });
+
+    rootUsage.forEach((item) => {
+      console.log(`[${item.commandName}] ${item.usage}`);
+    });
   }
 
   private executeCommand(Command: any, args: Dictionary) {
@@ -97,20 +159,23 @@ export class CLI {
 
     const handlerOptions = Reflect.ownKeys(handler);
 
-    // 更正确的应该是拿到内部所有被 Option / Options 装饰的属性进行处理
-    // 以后再🔐！
     handlerOptions.forEach((optionKey) => {
       const value = Reflect.get(handler, optionKey);
 
-      const [_, injectKey, rule] = value.split("_");
+      const { type, optionName: injectKey, initValue, rule } = value;
 
+      // use value from parsed args
       if (injectKey in args) {
         const argValue = args[injectKey];
-        // validate here
+
         Reflect.set(handler, optionKey, argValue);
+      } else {
+        // use default value or mark as undefined
+        // null should also be converted to undefined
+        Reflect.set(handler, optionKey, initValue ?? undefined);
       }
 
-      if (value === "OptionsToInject") {
+      if (type === "Options") {
         Reflect.set(handler, optionKey, args);
       }
     });
@@ -132,18 +197,14 @@ export class CLI {
     // 如果指定了 RootCommand，则调用
     // 否则检查是否启用了 enableHelp
     // 如果都没有，NoRootHandlerError
-    if (this.rootCommandRegistry.size > 0) {
-      const RootCommand = this.rootCommandRegistry.get("root").class;
-      this.executeCommand(RootCommand, parsedArgs);
-    } else if (this.options.enableUsage) {
-      this.printUsageIfEnabled();
-    } else {
-      // throws
-    }
-  }
-
-  private printUsageIfEnabled() {
-    console.log("this is help info");
+    // if (this.rootCommandRegistry.size > 0) {
+    //   const RootCommand = this.rootCommandRegistry.get("root").class;
+    //   this.executeCommand(RootCommand, parsedArgs);
+    // } else if (this.options.enableUsage) {
+    this.collectCommandUsage();
+    // } else {
+    //   // throws
+    // }
   }
 
   // 调用此方法后，再修改配置和添加命令将不会生效

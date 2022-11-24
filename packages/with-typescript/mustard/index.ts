@@ -11,18 +11,22 @@ class RunSyncCommand extends BaseCommand implements CommandStruct {
   @Option("dry", Validator.Required().String().MinLength(3).MaxLength(5))
   public dryOption;
 
+  static usage() {
+    return `run sync --dry`;
+  }
+
   public run(): void {
     console.log("Nested! ", this.dryOption);
   }
 }
 
-@Command("run")
+@Command("run", "r")
 class RunCommand extends BaseCommand implements CommandStruct {
   constructor() {
     super();
   }
 
-  example() {
+  static usage() {
     return `run xxx --dry`;
   }
 
@@ -47,6 +51,10 @@ class CheckCommand extends BaseCommand {
   @Option("dry")
   public dry;
 
+  static usage() {
+    return `check --dry`;
+  }
+
   public run(): void {
     console.log("Check Command! ", this.dry);
   }
@@ -58,8 +66,12 @@ class RootCommandHandle extends BaseCommand {
     super();
   }
 
-  @Option("dry")
-  public dry;
+  @Option("dry", "dry option")
+  public dry = "default value of dry";
+
+  static usage() {
+    return `x-cli --dry`;
+  }
 
   public run(): void {
     console.log("Root Command! ", this.dry);
@@ -75,8 +87,7 @@ cli.start();
 cli.configure({});
 
 /**
- * - alias support
  * - nested commands support
- * - collect commands info for usage generation
+ * - option description
  * - validator related
  */
