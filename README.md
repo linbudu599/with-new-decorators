@@ -2,6 +2,8 @@
 
 Deep dive in the [new ECMAScript Decorator](https://github.com/tc39/proposal-decorators), different kinds of decorators, new ones and old ones, and build IoC Container by various ways.
 
+> **Check out this project if you want to see the practical application: [Mustard](https://github.com/LinbuduLab/Mustard)**.
+
 ## With TypeScript
 
 A related PR [#50820](https://github.com/microsoft/TypeScript/pull/50820) is still in progress, maybe we can see the preview in 5.0 beta version.
