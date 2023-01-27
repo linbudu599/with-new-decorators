@@ -1,6 +1,12 @@
 import { Container } from "container";
 import type { IncomingMessage, ServerResponse } from "http";
-import type { FuncStruct, ClassStruct, MiddlewareStruct } from "./Typings";
+import type {
+  FuncStruct,
+  ClassStruct,
+  MiddlewareStruct,
+  AnyMethodClassDecoratorReturnType,
+  AnyClassDecoratorReturnType,
+} from "./Typings";
 
 enum RequestType {
   Get = "GET",
@@ -26,7 +32,7 @@ export class RouterCollector {
 
   public static RouteDecoratorFactory(
     method: RequestType
-  ): (path: string) => ClassMethodDecoratorFunction {
+  ): (path: string) => AnyMethodClassDecoratorReturnType {
     return (path) => {
       return (self, { kind, name }) => {
         if (kind === "method") {
@@ -42,7 +48,7 @@ export class RouterCollector {
    */
   public static Middleware(
     mws: MiddlewareStruct[]
-  ): ClassMethodDecoratorFunction {
+  ): AnyMethodClassDecoratorReturnType {
     return (self, { kind, name }) => {
       if (kind === "method") {
         RouterCollector.middlewareMap.set(self, mws);
@@ -50,15 +56,15 @@ export class RouterCollector {
     };
   }
 
-  public static Get(path: string): ClassMethodDecoratorFunction {
+  public static Get(path: string): AnyMethodClassDecoratorReturnType {
     return RouterCollector.RouteDecoratorFactory(RequestType.Get)(path);
   }
 
-  public static Post(path: string): ClassMethodDecoratorFunction {
+  public static Post(path: string): AnyMethodClassDecoratorReturnType {
     return RouterCollector.RouteDecoratorFactory(RequestType.Post)(path);
   }
 
-  public static Controller(path = ""): ClassDecoratorFunction {
+  public static Controller(path = ""): AnyClassDecoratorReturnType {
     return (Self, { kind, name }) => {
       // @ts-ignore use ignore as expect-error not working correctly here
       RouterCollector.controllerMap.set(Self, path);

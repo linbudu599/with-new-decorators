@@ -1,6 +1,10 @@
 import { ScopeEnum } from "server-utils";
 
-import type { ClassStruct } from "./Typings";
+import type {
+  AnyClassDecoratorReturnType,
+  AnyClassFieldDecoratorReturnType,
+  ClassStruct,
+} from "./Typings";
 
 const ClassRegistryMap = Map<string, ClassStruct<any>>;
 
@@ -15,19 +19,21 @@ export class Container {
 
   private static scopeMap = new ScopeMap();
 
-  public static Scope(scope: ScopeEnum): ClassDecoratorFunction {
+  public static Scope(scope: ScopeEnum): AnyClassDecoratorReturnType {
     return (Self, { kind, name }) => {
       Container.scopeMap.set(name, scope);
     };
   }
 
-  public static Inject<T>(identifier: string): ClassFieldDecoratorFunction {
+  public static Inject<T>(
+    identifier: string
+  ): AnyClassFieldDecoratorReturnType {
     return (_self, { kind, name }) => {
       return (_initialValue) => Container.produce(identifier ?? String(name));
     };
   }
 
-  public static Provide(identifier?: string): ClassDecoratorFunction {
+  public static Provide(identifier?: string): AnyClassDecoratorReturnType {
     return (Self, { kind, name }) => {
       if (kind === "class") {
         // @ts-ignore

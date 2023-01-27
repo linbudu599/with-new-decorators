@@ -17,3 +17,18 @@ export type MiddlewareStruct = (
   res: ServerResponse,
   result: unknown
 ) => unknown;
+
+export type AnyClassFieldDecoratorReturnType = (
+  a1: undefined,
+  context: ClassFieldDecoratorContext
+) => (initialValue: any) => any | void;
+
+export type AnyClassDecoratorReturnType = (
+  target: any,
+  context: ClassDecoratorContext
+) => void;
+
+export type AnyMethodClassDecoratorReturnType = (
+  target: any,
+  context: ClassMethodDecoratorContext
+) => void;

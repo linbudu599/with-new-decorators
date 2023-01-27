@@ -4,14 +4,10 @@ Deep dive in the [new ECMAScript Decorator](https://github.com/tc39/proposal-dec
 
 ## With TypeScript
 
-A related PR [#50820](https://github.com/microsoft/TypeScript/pull/50820) is still in progress, maybe we can see the preview in 5.0 beta version.
+Please install TypeScript >= 5.0.0 to use new decorators.
 
-UPDATE: You can install developing version of typescript from tarball version like this:
-
-```json
-"devDependencies": {
-   "typescript": "npm:@typescript-deploys/pr-build@5.0.0-pr-50820-31"
-}
+```typescript
+$ npm i typescript@beta
 ```
 
 IoC related samples:
